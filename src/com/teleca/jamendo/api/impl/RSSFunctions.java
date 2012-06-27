@@ -18,8 +18,11 @@ package com.teleca.jamendo.api.impl;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import android.util.Log;
 
 import com.teleca.jamendo.api.util.XMLUtil;
 
@@ -52,15 +55,23 @@ public class RSSFunctions {
 			if( item_node.getNodeType() == Node.ELEMENT_NODE ){
 				Element item_element = (Element)item_node;
 				
-				// getting to link node in order to extract track id's
-				Node link_node = item_element.getElementsByTagName("link").item(0);
+//				// getting to link node in order to extract track id's
+//				Node link_node = item_element.getElementsByTagName("link").item(0);
+//				
+//				// link with track id
+//				String link = link_node.getFirstChild().getNodeValue();
+//				
+//				// parsing
+//				String trackidStr = link.replaceAll("http://www.jamendo.com/track/", "");
+//				tracks_id[i] = Integer.parseInt(trackidStr);
 				
-				// link with track id
-				String link = link_node.getFirstChild().getNodeValue();
-				
-				// parsing
-				String trackidStr = link.replaceAll("http://www.jamendo.com/track/", "");
-				tracks_id[i] = Integer.parseInt(trackidStr);
+				Node link_node = item_element.getElementsByTagName("enclosure").item(0);
+        NamedNodeMap nMap = link_node.getAttributes();
+        Node url = nMap.getNamedItem("url");
+        String link = url.getNodeValue();
+        String trackidStr = link.replace("http://storage-new.newjamendo.com/?trackid=", "");
+        Log.d("RSSFunctions", "Top 100 track is " + trackidStr);
+        tracks_id[i] = Integer.parseInt(trackidStr);
 			}
 		}
 		
